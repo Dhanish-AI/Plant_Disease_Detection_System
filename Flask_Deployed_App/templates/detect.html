@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}Disease Detection{% endblock %}
+
+{% block additional_styles %}
+:root {
+    --gradient-start: #00b09b;
+    --gradient-end: #96c93d;
+    --accent-color: #ff6b6b;
+    --text-dark: #2d3436;
+    --card-bg: #f8f9fa;
+}
+
+.upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    margin: 20px 0;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+}
+
+.upload-area:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 176, 155, 0.3);
+}
+
+.upload-area .btn-primary {
+    margin-top: 20px;
+    background-color: white;
+    color: var(--gradient-start);
+    border: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.upload-area .btn-primary:hover {
+    background-color: var(--gradient-start);
+    color: white;
+}
+
+.upload-icon {
+    font-size: 4rem;
+    color: white;
+    margin-bottom: 15px;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.upload-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.upload-subtext {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 400px;
+    margin: 20px auto;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: block;
+    transition: transform 0.3s ease;
+    border: 5px solid white;
+}
+
+.result-section {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border-top: 5px solid var(--gradient-start);
+}
+
+.result-heading {
+    color: var(--gradient-start);
+    font-size: 1.8rem;
+    font-weight: 600;
+    background: -webkit-linear-gradient(45deg, var(--gradient-start), var(--gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h2 class="text-center mb-4 page-header">
+                <i class="fas fa-leaf me-2"></i>
+                Plant Disease Detection
+            </h2>
+            <p class="text-center page-description mb-5">
+                Upload a photo of your plant leaf to identify diseases and get treatment recommendations
+            </p>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form id="uploadForm">
+                        <div class="upload-area" id="dropZone">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <p class="upload-text mb-2">Drag and drop your image here</p>
+                            <p class="upload-subtext">or click to browse files</p>
+                            <button type="button" class="btn btn-primary" id="browseFiles">Browse Files</button>
+                            <input type="file" id="fileInput" name="file" accept="image/*" style="display: none;">
+                        </div>
+                    </form>
+                    
+                    <div class="text-center">
+                        <img id="preview" class="preview-image d-none">
+                        
+                        <div class="loading d-none" id="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Analyzing image...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-section" style="display: none;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Detection Results</h3>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <img id="preview" class="img-fluid rounded" alt="Plant Image">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h4 id="disease-name"></h4>
+                                        <p id="description"></p>
+                                        <h5>Prevention Steps:</h5>
+                                        <p id="prevention"></p>
+                                        <h5>Recommended Treatment:</h5>
+                                        <p id="supplement"></p>
+                                        <h5>Growing Tips:</h5>
+                                        <p id="growing-tips"></p>
+                                        <h5>Benefits:</h5>
+                                        <p id="benefits"></p>
+                                        <h5>Fertilizer Recommendations:</h5>
+                                        <p id="fertilizer"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    const fileInput = $('#fileInput');
+    const preview = $('#preview');
+    const loading = $('#loading');
+    const result = $('#result');
+    const browseFiles = $('#browseFiles');
+
+    // Handle click to select
+    browseFiles.on('click', function() {
+        fileInput.click();
+    });
+
+    // Handle file selection
+    fileInput.on('change', (e) => {
+        handleFile(e.target.files[0]);
+    });
+
+    // Handle drag and drop
+    $('#dropZone').on('dragover', (e) => {
+        e.preventDefault();
+        $('#dropZone').css('border-color', '#007bff');
+    });
+
+    $('#dropZone').on('dragleave', () => {
+        $('#dropZone').css('border-color', '#ccc');
+    });
+
+    $('#dropZone').on('drop', (e) => {
+        e.preventDefault();
+        const files = e.originalEvent.dataTransfer.files;
+        handleFile(files[0]);
+    });
+
+    function handleFile(file) {
+        if (!file || !file.type.startsWith('image/')) {
+            alert('Please upload an image file');
+            return;
+        }
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            preview.attr('src', e.target.result)
+                   .removeClass('d-none');
+        }
+        reader.readAsDataURL(file);
+
+        // Simulate upload and get prediction
+        loading.removeClass('d-none');
+        result.addClass('d-none');
+
+        // Upload and get prediction
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: '/predict',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                displayResults(response);
+            },
+            error: function() {
+                alert('Error processing image');
+            },
+            complete: function() {
+                loading.addClass('d-none');
+            }
+        });
+    }
+
+    function displayResults(data) {
+        document.querySelector('#disease-name').textContent = data.disease_name;
+        document.querySelector('#description').textContent = data.description;
+        document.querySelector('#prevention').textContent = data.prevention;
+        document.querySelector('#supplement').textContent = data.supplement;
+        document.querySelector('#growing-tips').textContent = data.growing_tips || 'Not available';
+        document.querySelector('#benefits').textContent = data.benefits || 'Not available';
+        document.querySelector('#fertilizer').textContent = data.fertilizer || 'Not available';
+        document.querySelector('#preview').src = data.image_path;
+        document.querySelector('.result-section').style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

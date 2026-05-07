@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Market{% endblock %}
+
+{% block additional_styles %}
+.product-card {
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+.buy-btn {
+    background-color: var(--primary-color);
+    border: none;
+}
+
+.buy-btn:hover {
+    background-color: var(--secondary-color);
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-5">Treatment Products</h2>
+    
+    <div class="row">
+        {% for image, name, disease, link in supplements %}
+        <div class="col-md-4 mb-4">
+            <div class="card product-card">
+                <img src="{{ image }}" class="card-img-top product-image" alt="{{ name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ name }}</h5>
+                    <p class="card-text">For treating: {{ disease }}</p>
+                    <a href="{{ link }}" class="btn btn-primary buy-btn" target="_blank">
+                        Buy Now <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

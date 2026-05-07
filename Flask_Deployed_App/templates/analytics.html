@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4 page-header">
+        <i class="fas fa-chart-bar me-2"></i>Disease Analytics
+    </h2>
+
+    <div class="row">
+        <!-- Disease Distribution Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Disease Distribution</h5>
+                    <canvas id="diseaseChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Rate Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Treatment Success Rate</h5>
+                    <canvas id="successRateChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends Card -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Disease Trends</h5>
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const analyticsData = JSON.parse('{{ analytics_data | tojson | safe }}');
+
+        // Chart.js Initialization
+        if (analyticsData.disease_distribution) {
+            new Chart(document.getElementById('diseaseChart'), {
+                type: 'pie',
+                data: {
+                    labels: analyticsData.disease_distribution.labels,
+                    datasets: [{
+                        data: analyticsData.disease_distribution.data,
+                        backgroundColor: ['#2ecc71', '#3498db', '#e74c3c']
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        if (analyticsData.success_rates) {
+            new Chart(document.getElementById('successRateChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: analyticsData.success_rates.labels,
+                    datasets: [{
+                        data: analyticsData.success_rates.data,
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c']
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+
+        if (analyticsData.monthly_trends) {
+            new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: analyticsData.monthly_trends.labels,
+                    datasets: [{
+                        label: 'Disease Cases',
+                        data: analyticsData.monthly_trends.data,
+                        borderColor: '#2ecc71',
+                        tension: 0.1
+                    }]
+                },
+                options: { responsive: true }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+status.lib
+.installed.cfg
+*.egg
+
+# Databases
+*.db
+*.sqlite3
+
+# Models (Too large for GitHub)
+*.pt
+*.pth
+*.h5
+*.weights
+*.onnx
+
+# Uploaded files
+Flask_Deployed_App/static/uploads/*
+!Flask_Deployed_App/static/uploads/.gitkeep
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/

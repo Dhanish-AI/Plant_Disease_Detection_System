@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Disease History{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-4 page-header">
+                <i class="fas fa-history me-2"></i>Disease History
+            </h2>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Image</th>
+                                    <th>Disease</th>
+                                    <th>Treatment Applied</th>
+                                    <th>Success Rate</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in history %}
+                                <tr>
+                                    <td>{{ entry.diagnosis_date.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        <img src="{{ entry.plant_image_url }}" alt="Plant Image" 
+                                             class="img-thumbnail" style="max-width: 100px;">
+                                    </td>
+                                    <td>{{ entry.disease_name }}</td>
+                                    <td>{{ entry.treatment_applied }}</td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" 
+                                                 role="progressbar" style="width: {{ entry.success_rate }}%" aria-valuenow="{{ entry.success_rate }}" aria-valuemin="0" aria-valuemax="100">
+                                                {{ entry.success_rate }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ entry.notes }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

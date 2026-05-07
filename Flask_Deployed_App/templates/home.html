@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block additional_styles %}
+{
+    .hero-section {
+        background: linear-gradient(rgba(46, 204, 113, 0.8), rgba(39, 174, 96, 0.8)), url('/static/images/plants-bg.jpg');
+        background-size: cover;
+        color: white;
+        padding: 100px 0;
+        text-align: center;
+    }
+
+    .feature-card {
+        padding: 30px;
+        text-align: center;
+        height: 100%;
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container">
+        <h1 class="display-4 mb-4">Detect Plant Diseases Instantly</h1>
+        <p class="lead mb-4">Upload a photo of your plant and get instant disease detection results with prevention tips</p>
+        <a href="/detect" class="btn btn-light btn-lg">Start Detection</a>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card feature-card">
+                    <i class="fas fa-camera feature-icon"></i>
+                    <h3>Take Photo</h3>
+                    <p>Upload a clear photo of the affected plant leaf or area</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card feature-card">
+                    <i class="fas fa-microscope feature-icon"></i>
+                    <h3>Analyze</h3>
+                    <p>Our AI model analyzes the image to detect diseases</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card feature-card">
+                    <i class="fas fa-clipboard-list feature-icon"></i>
+                    <h3>Get Results</h3>
+                    <p>Receive detailed results and treatment recommendations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
